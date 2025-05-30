@@ -1,8 +1,8 @@
 {
-    "esversion": 6,
+    "esversion": 8,
     "browser": true,
     "node": true,
-    "strict": "global",
+    "strict": false,
     "undef": true,
     "unused": true,
     "indent": 2,
@@ -22,7 +22,6 @@
     "nonew": true,
     "plusplus": false,
     "regexp": true,
-    "undef": true,
     "sub": true,
     "white": false,
     "globals": {
