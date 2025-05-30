@@ -23,19 +23,19 @@ const reviews = new Schema({
     type: Boolean,
     required: true
   },
-  purchase_date: {
+  purchaseDate: {
     type: String,
     required: true
   },
-  car_make: {
+  carMake: {
     type: String,
     required: true
   },
-  car_model: {
+  carModel: {
     type: String,
     required: true
   },
-  car_year: {
+  carYear: {
     type: Number,
     required: true
   },

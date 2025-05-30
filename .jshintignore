@@ -3,4 +3,9 @@ build/
 dist/
 static/
 server/frontend/
-frontend/ 
+frontend/
+*.min.js
+*.bundle.js
+*.chunk.js
+server/static/**/*.js
+server/database/node_modules/ 
