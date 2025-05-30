@@ -10,12 +10,12 @@ def analyze_sentiment(text):
     Returns a sentiment score between -1 (negative) and 1 (positive)
     """
     try:
-        # Create a TextBlob object
+        # Create a TextBlob objec
         blob = TextBlob(text)
-        
+
         # Get the sentiment polarity (-1 to 1)
         sentiment = blob.sentiment.polarity
-        
+
         # Determine the sentiment label
         if sentiment > 0:
             label = "positive"
@@ -23,7 +23,7 @@ def analyze_sentiment(text):
             label = "negative"
         else:
             label = "neutral"
-            
+
         return jsonify({
             "sentiment": sentiment,
             "label": label
@@ -34,4 +34,4 @@ def analyze_sentiment(text):
         }), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5050) 
+    app.run(host='0.0.0.0', port=5050)
