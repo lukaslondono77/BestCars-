@@ -51,6 +51,12 @@ jobs:
     - name: Run Linter
       run: |
         # This command finds all JavaScript files recursively and runs JSHint on them
-        # Excluding minified files and node_modules
-        find . -name "*.js" -not -path "*/node_modules/*" -not -path "*/static/static/*" -not -path "*/build/*" -not -path "*/dist/*" -exec jshint {} +
+        # Excluding minified files, node_modules, and build directories
+        find . -name "*.js" \
+          -not -path "*/node_modules/*" \
+          -not -path "*/static/static/*" \
+          -not -path "*/build/*" \
+          -not -path "*/dist/*" \
+          -not -path "*/static/*" \
+          -exec jshint --config .jshintrc {} +
         echo "Linted all the js files successfully" 

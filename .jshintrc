@@ -6,5 +6,16 @@
     "undef": true,
     "unused": true,
     "indent": 2,
-    "maxlen": 120
+    "maxlen": 120,
+    "globals": {
+        "React": true,
+        "ReactDOM": true,
+        "JSX": true
+    },
+    "ignore": [
+        "node_modules",
+        "build",
+        "dist",
+        "static"
+    ]
 } 
