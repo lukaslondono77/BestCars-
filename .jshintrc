@@ -1,0 +1,10 @@
+{
+    "esversion": 8,
+    "node": true,
+    "browser": true,
+    "strict": "implied",
+    "undef": true,
+    "unused": true,
+    "indent": 2,
+    "maxlen": 120
+} 
