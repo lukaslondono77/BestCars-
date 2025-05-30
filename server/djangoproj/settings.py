@@ -178,7 +178,5 @@ def add_security_headers(get_response):
         return response
     return middleware
 
-MIDDLEWARE.append('djangoproj.settings.add_security_headers')
-
-
+# Add security headers middleware to the list
 MIDDLEWARE.append('djangoproj.settings.add_security_headers')
