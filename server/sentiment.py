@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from textblob import TextBlob
 
 app = Flask(__name__)
@@ -10,7 +10,7 @@ def analyze_sentiment(text):
     Returns a sentiment score between -1 (negative) and 1 (positive)
     """
     try:
-        # Create a TextBlob objec
+        # Create a TextBlob object
         blob = TextBlob(text)
 
         # Get the sentiment polarity (-1 to 1)
