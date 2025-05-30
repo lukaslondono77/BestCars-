@@ -1,12 +1,10 @@
 import os
-import json
 import requests
 from dotenv import load_dotenv
 from .models import CarDealer, DealerReview
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
-
 
 load_dotenv()
 

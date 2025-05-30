@@ -145,14 +145,16 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build/static'),
 ]
 
+
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True  # Only for developmen
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://0.0.0.0:8000",
 ]
+
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
@@ -168,7 +170,8 @@ SECURE_SSL_REDIRECT = False  # Set to True in production
 SESSION_COOKIE_SECURE = False  # Set to True in production
 CSRF_COOKIE_SECURE = False  # Set to True in production
 
-# Add security headers middleware
+
+
 def add_security_headers(get_response):
     def middleware(request):
         response = get_response(request)
@@ -178,5 +181,5 @@ def add_security_headers(get_response):
         return response
     return middleware
 
-# Add security headers middleware to the list
+
 MIDDLEWARE.append('djangoproj.settings.add_security_headers')
