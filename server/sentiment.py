@@ -1,7 +1,9 @@
 from flask import Flask, jsonify
 from textblob import TextBlob
 
+
 app = Flask(__name__)
+
 
 @app.route('/analyze/<text>', methods=['GET'])
 def analyze_sentiment(text):
@@ -32,6 +34,7 @@ def analyze_sentiment(text):
         return jsonify({
             "error": str(e)
         }), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
