@@ -21,9 +21,9 @@ def get_request(url, **kwargs):
         # Call get method of requests library with URL and parameters
         response = requests.get(url, headers={'Content-Type': 'application/json'},
                               params=kwargs)
-    except Exception as e:
+    except:
         # If any error occurs
-        print("Network exception occurred: {}".format(e))
+        print("Network exception occurred")
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
@@ -33,14 +33,9 @@ def analyze_review_sentiments(text):
     """
     Analyze the sentiment of a review text using the sentiment analyzer service
     """
-    request_url = sentiment_analyzer_url+"analyze/"+text
-    try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(request_url)
-        return response.json()
-    except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
-        print("Network exception occurred")
+    url = "https://us-south.functions.appdomain.cloud/api/v1/web/5c1c631c-5e4d-4f1b-8f0d-8f0d8f0d8f0d/dealership-package/get-sentiment"
+    response = requests.post(url, json={"text": text})
+    return response.json()
 
 def post_review(data_dict):
     request_url = backend_url+"/insert_review"
@@ -55,9 +50,12 @@ def post_request(url, json_payload, **kwargs):
     print(kwargs)
     print("POST to {} ".format(url))
     try:
-        response = requests.post(url, params=kwargs, json=json_payload)
-    except Exception as e:
-        print("Network exception occurred: {}".format(e))
+        # Call post method of requests library with URL and parameters
+        response = requests.post(url, headers={'Content-Type': 'application/json'},
+                               params=kwargs, json=json_payload)
+    except:
+        # If any error occurs
+        print("Network exception occurred")
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
@@ -75,8 +73,10 @@ def get_dealers_from_cf(url, **kwargs):
             # Get its content in `doc` object
             dealer_doc = dealer["doc"]
             # Create a CarDealer object with values in `doc` object
-            dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], full_name=dealer_doc["full_name"],
-                                 id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
+            dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],
+                                 full_name=dealer_doc["full_name"],
+                                 id=dealer_doc["id"], lat=dealer_doc["lat"],
+                                 long=dealer_doc["long"],
                                  short_name=dealer_doc["short_name"],
                                  st=dealer_doc["st"], zip=dealer_doc["zip"])
             results.append(dealer_obj)
@@ -94,10 +94,14 @@ def get_dealer_reviews_from_cf(url, dealer_id):
             # Get its content in `doc` object
             review_doc = review["doc"]
             # Create a DealerReview object with values in `doc` object
-            review_obj = DealerReview(dealership=review_doc["dealership"], name=review_doc["name"],
-                                    purchase=review_doc["purchase"], review=review_doc["review"],
-                                    purchase_date=review_doc["purchase_date"], car_make=review_doc["car_make"],
-                                    car_model=review_doc["car_model"], car_year=review_doc["car_year"],
-                                    sentiment=review_doc["sentiment"], id=review_doc["id"])
+            review_obj = DealerReview(dealership=review_doc["dealership"],
+                                    name=review_doc["name"],
+                                    purchase=review_doc["purchase"],
+                                    review=review_doc["review"],
+                                    purchase_date=review_doc["purchase_date"],
+                                    car_make=review_doc["car_make"],
+                                    car_model=review_doc["car_model"],
+                                    car_year=review_doc["car_year"],
+                                    sentiment=analyze_review_sentiments(review_doc["review"]))
             results.append(review_obj)
     return results
