@@ -1,40 +1,59 @@
-from .models import CarMake, CarModel, Dealer
+from djangoapp.models import CarMake, CarModel, Dealer
+from django.core.management.base import BaseCommand
 
 def initiate():
     car_make_data = [
-        {"name": "Toyota", "description": "Japanese automotive manufacturer", "country": "Japan", "founded_year": 1937},
-        {"name": "BMW", "description": "German luxury vehicle manufacturer", "country": "Germany", "founded_year": 1916},
-        {"name": "Tesla", "description": "American electric vehicle manufacturer", "country": "USA", "founded_year": 2003},
-        {"name": "Ford", "description": "American multinational automaker", "country": "USA", "founded_year": 1903},
-        {"name": "Honda", "description": "Japanese multinational conglomerate", "country": "Japan", "founded_year": 1948}
+        {"name": "NISSAN", "description": "Great cars. Japanese technology"},
+        {"name": "Mercedes", "description": "Great cars. German luxury"},
+        {"name": "Audi", "description": "Great cars. German technology"},
+        {"name": "Kia", "description": "Great cars. Korean technology"},
+        {"name": "Toyota", "description": "Great cars. Japanese technology"},
     ]
 
+    car_make_instances = []
+    for data in car_make_data:
+        car_make_instances.append(CarMake.objects.create(name=data['name'],
+                                                       description=data['description']))
+
+    # Create CarModel instances with the corresponding CarMake instances
     car_model_data = [
-        # Toyota Models
-        {"name": "Camry", "car_make": "Toyota", "type": "SEDAN", "year": 2023},
-        {"name": "RAV4", "car_make": "Toyota", "type": "SUV", "year": 2023},
-        {"name": "Prius", "car_make": "Toyota", "type": "HYBRID", "year": 2023},
-        
-        # BMW Models
-        {"name": "3 Series", "car_make": "BMW", "type": "SEDAN", "year": 2023},
-        {"name": "X5", "car_make": "BMW", "type": "SUV", "year": 2023},
-        {"name": "M4", "car_make": "BMW", "type": "SPORTS", "year": 2023},
-        
-        # Tesla Models
-        {"name": "Model 3", "car_make": "Tesla", "type": "ELECTRIC", "year": 2023},
-        {"name": "Model Y", "car_make": "Tesla", "type": "ELECTRIC", "year": 2023},
-        {"name": "Model S", "car_make": "Tesla", "type": "ELECTRIC", "year": 2023},
-        
-        # Ford Models
-        {"name": "Mustang", "car_make": "Ford", "type": "SPORTS", "year": 2023},
-        {"name": "F-150", "car_make": "Ford", "type": "TRUCK", "year": 2023},
-        {"name": "Explorer", "car_make": "Ford", "type": "SUV", "year": 2023},
-        
-        # Honda Models
-        {"name": "Civic", "car_make": "Honda", "type": "SEDAN", "year": 2023},
-        {"name": "CR-V", "car_make": "Honda", "type": "SUV", "year": 2023},
-        {"name": "Accord", "car_make": "Honda", "type": "SEDAN", "year": 2023}
+        {"name": "Pathfinder", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[0]},
+        {"name": "Qashqai", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[0]},
+        {"name": "XTRAIL", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[0]},
+        {"name": "A-Class", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[1]},
+        {"name": "C-Class", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[1]},
+        {"name": "E-Class", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[1]},
+        {"name": "A4", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[2]},
+        {"name": "A5", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[2]},
+        {"name": "A6", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[2]},
+        {"name": "Sorrento", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[3]},
+        {"name": "Carnival", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[3]},
+        {"name": "Cerato", "type": "Sedan", "year": 2023,
+         "car_make": car_make_instances[3]},
+        {"name": "Corolla", "type": "Sedan", "year": 2023,
+         "car_make": car_make_instances[4]},
+        {"name": "Camry", "type": "Sedan", "year": 2023,
+         "car_make": car_make_instances[4]},
+        {"name": "Kluger", "type": "SUV", "year": 2023,
+         "car_make": car_make_instances[4]},
     ]
+
+    for data in car_model_data:
+        CarModel.objects.create(name=data['name'],
+                              car_make=data['car_make'],
+                              car_type=data['type'],
+                              year=data['year'])
 
     dealer_data = [
         {
@@ -98,29 +117,6 @@ def initiate():
             "full_name": "Classic Motors Houston"
         }
     ]
-
-    # Create car makes
-    for make_data in car_make_data:
-        CarMake.objects.get_or_create(
-            name=make_data["name"],
-            defaults={
-                "description": make_data["description"],
-                "country": make_data["country"],
-                "founded_year": make_data["founded_year"]
-            }
-        )
-
-    # Create car models
-    for model_data in car_model_data:
-        car_make = CarMake.objects.get(name=model_data["car_make"])
-        CarModel.objects.get_or_create(
-            name=model_data["name"],
-            car_make=car_make,
-            defaults={
-                "type": model_data["type"],
-                "year": model_data["year"]
-            }
-        )
 
     # Create dealers
     for dealer_data in dealer_data:
