@@ -1,0 +1,11 @@
+[flake8]
+max-line-length = 100
+exclude = .git,__pycache__,build,dist,*.pyc
+ignore = E203, W503
+per-file-ignores =
+    # imported but unused
+    __init__.py: F401
+    # line too long
+    */migrations/*: E501
+    */settings.py: E501
+    */urls.py: E501 
