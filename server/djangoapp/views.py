@@ -13,8 +13,9 @@ from django.contrib.auth import login, authenticate
 import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
-from .models import CarMake, CarModel, Dealer
+from .models import CarMake, CarModel, Dealer, CarDealerReview
 from .populate import initiate
+from .restapis import get_request, analyze_review_sentiments, post_review
 
 
 # Get an instance of a logger
@@ -103,19 +104,93 @@ def get_dealers(request):
         })
     return JsonResponse({'status': 200, 'dealers': dealers_list})
 
+def get_dealerships(request, state="All"):
+    if(state == "All"):
+        endpoint = "/fetchDealers"
+    else:
+        endpoint = "/fetchDealers/"+state
+    dealerships = get_request(endpoint)
+    return JsonResponse({"status":200,"dealers":dealerships})
+
+def get_dealer_details(request, dealer_id):
+    if dealer_id:
+        try:
+            dealer = Dealer.objects.get(id=dealer_id)
+            dealer_data = {
+                'id': dealer.id,
+                'full_name': dealer.full_name,
+                'city': dealer.city,
+                'address': dealer.address,
+                'zip': dealer.zip,
+                'state': dealer.state
+            }
+            return JsonResponse({"status": 200, "dealer": [dealer_data]})
+        except Dealer.DoesNotExist:
+            return JsonResponse({"status": 404, "message": "Dealer not found"})
+    else:
+        return JsonResponse({"status": 400, "message": "Bad Request"})
+
+def get_dealer_reviews(request, dealer_id):
+    if(dealer_id):
+        endpoint = "/fetchReviews/dealer/"+str(dealer_id)
+        reviews = get_request(endpoint)
+        for review_detail in reviews:
+            try:
+                response = analyze_review_sentiments(review_detail['review'])
+                if response and 'sentiment' in response:
+                    review_detail['sentiment'] = response['sentiment']
+                else:
+                    review_detail['sentiment'] = 'neutral'
+            except Exception as e:
+                print(f"Error analyzing sentiment: {str(e)}")
+                review_detail['sentiment'] = 'neutral'
+        return JsonResponse({"status":200,"reviews":reviews})
+    else:
+        return JsonResponse({"status":400,"message":"Bad Request"})
+
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
 # def get_dealerships(request):
 # ...
 
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
-# def get_dealer_reviews(request,dealer_id):
-# ...
-
-# Create a `get_dealer_details` view to render the dealer details
-# def get_dealer_details(request, dealer_id):
-# ...
-
-# Create a `add_review` view to submit a review
-# def add_review(request):
-# ...
+@csrf_exempt
+def add_review(request):
+    if request.user.is_authenticated:
+        try:
+            data = json.loads(request.body)
+            dealer_id = data.get('dealership')
+            dealer = Dealer.objects.get(id=dealer_id)
+            
+            # Handle empty car_year
+            car_year = data.get('car_year')
+            if car_year == '':
+                car_year = None
+            
+            review = CarDealerReview(
+                dealership=dealer,
+                name=data.get('name'),
+                purchase=data.get('purchase', False),
+                review=data.get('review'),
+                purchase_date=data.get('purchase_date'),
+                car_make=data.get('car_make', ''),
+                car_model=data.get('car_model', ''),
+                car_year=car_year,
+                sentiment='neutral'  # Will be updated by the sentiment analysis
+            )
+            review.save()
+            
+            # Analyze sentiment
+            try:
+                sentiment = analyze_review_sentiments(review.review)
+                if sentiment and 'sentiment' in sentiment:
+                    review.sentiment = sentiment['sentiment']
+                    review.save()
+            except Exception as e:
+                print(f"Error analyzing sentiment: {str(e)}")
+            
+            return JsonResponse({"status": 200, "message": "Review added successfully"})
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return JsonResponse({"status": 401, "message": "Error inserting review"})
+    else:
+        return JsonResponse({"status": 403, "message": "Unauthorized"})

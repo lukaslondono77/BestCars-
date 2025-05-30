@@ -89,3 +89,17 @@ class CarModel(models.Model):
     
     def __str__(self):
         return f"{self.car_make.name} {self.name}"
+
+class CarDealerReview(models.Model):
+    dealership = models.ForeignKey(Dealer, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    purchase = models.BooleanField(default=False)
+    review = models.TextField()
+    purchase_date = models.DateField(null=True, blank=True)
+    car_make = models.CharField(max_length=100, blank=True)
+    car_model = models.CharField(max_length=100, blank=True)
+    car_year = models.IntegerField(null=True, blank=True)
+    sentiment = models.CharField(max_length=20, blank=True)
+    
+    def __str__(self):
+        return f"Review by {self.name} for {self.dealership.full_name}"

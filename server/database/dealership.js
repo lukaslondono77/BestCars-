@@ -24,11 +24,11 @@ const dealerships = new Schema({
     required: true
   },
   lat: {
-    type: String,
+    type: Number,
     required: true
   },
   long: {
-    type: String,
+    type: Number,
     required: true
   },
   short_name: {
